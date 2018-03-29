@@ -23,5 +23,19 @@ public class Shape {
             
     };
     
+    public Shape(Tetrominoes pieceShape) {
+        this.pieceShape = pieceShape;
+        coordinates = coordsTable[pieceShape.ordinal()];
+    }
+    
+    public int[][] getCoordnates() {
+        return coordinates;
+    }
+    
+    public Tetrominoes getShape() {
+        return pieceShape;
+    }
+    
+    
     
 }
