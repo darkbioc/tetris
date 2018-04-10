@@ -9,10 +9,13 @@
             <Property name="text" type="java.lang.String" value="Game"/>
           </Properties>
           <SubComponents>
-            <MenuItem class="javax.swing.JMenuItem" name="jMenuItem1">
+            <MenuItem class="javax.swing.JMenuItem" name="jMenuItemInitGame">
               <Properties>
                 <Property name="text" type="java.lang.String" value="init game"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuItemInitGameActionPerformed"/>
+              </Events>
             </MenuItem>
           </SubComponents>
         </Menu>
@@ -51,7 +54,7 @@
 
   <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout"/>
   <SubComponents>
-    <Component class="ScoreBoard" name="scoreBoard1">
+    <Component class="ScoreBoard" name="scoreBoard">
       <Properties>
         <Property name="text" type="java.lang.String" value="scoreBoard1"/>
       </Properties>
@@ -61,7 +64,7 @@
         </Constraint>
       </Constraints>
     </Component>
-    <Container class="Board" name="board2">
+    <Container class="Board" name="board">
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout" value="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout$BorderConstraintsDescription">
           <BorderConstraints direction="Center"/>
