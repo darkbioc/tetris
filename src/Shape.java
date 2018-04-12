@@ -13,13 +13,13 @@ public class Shape {
     private int[][] coordinates;
     private static int[][][] coordsTable = new int[][][] {
             { { 0, 0 },   { 0, 0 },   { 0, 0 },   { 0, 0 } },
-            { { 0, -1 },  { 0, 0 },   { -1, 0 },  { -1, 1 } },
-            { { 0, -1 },  { 0, 0 },   { 1, 0 },   { 1, 1 } },
-            { { 0, -1 },  { 0, 0 },   { 0, 1 },   { 0, 2 } },
-            { { -1, 0 },  { 0, 0 },   { 1, 0 },   { 0, 1 } },
-            { { 0, 0 },   { 1, 0 },   { 0, 1 },   { 1, 1 } },
-            { { -1, -1 }, { 0, -1 },  { 0, 0 },   { 0, 1 } },
-            { { 1, -1 },  { 0, -1 },  { 0, 0 },   { 0, 1 } }
+            { { 0, -1 },  { 0, 0 },   { -1, 0 },  { -1, 1 } },      //Z
+            { { 0, -1 },  { 0, 0 },   { 1, 0 },   { 1, 1 } },       //S
+            { { 0, -1 },  { 0, 0 },   { 0, 1 },   { 0, 2 } },       //I
+            { { -1, 0 },  { 0, 0 },   { 1, 0 },   { 0, 1 } },       //T
+            { { 0, 0 },   { 1, 0 },   { 0, 1 },   { 1, 1 } },       //Cubo
+            { { -1, -1 }, { 0, -1 },  { 0, 0 },   { 0, 1 } },       //L 
+            { { 1, -1 },  { 0, -1 },  { 0, 0 },   { 0, 1 } }        //L inv
             
     };
     
@@ -38,7 +38,7 @@ public class Shape {
         return new Shape();
     }
     
-    public int[][] getCoordnates() {
+    public int[][] getCoordinates() {
         return coordinates;
     }
     
@@ -46,6 +46,52 @@ public class Shape {
         return pieceShape;
     }
     
+    public int getXMin()
+    {
+        int candidate = coordinates[0][0];
+        for (int i = 1; i < coordinates.length; i++) 
+        {
+            if(coordinates [i][0]<candidate)
+                candidate=coordinates[i][0];
+        }
+        return candidate;
+    }
     
+    public int getXMax()
+    {
+        int candidate = coordinates[0][0];
+        for (int i = 1; i < coordinates.length; i++) 
+        {
+            if(coordinates [i][0]>candidate)
+                candidate=coordinates[i][0];
+        }
+        return candidate;
+    }
+    
+    public int getYMin()
+    {
+        int candidate = coordinates[0][1];
+        for (int i = 1; i < coordinates.length; i++) 
+        {
+            if(coordinates [i][1]<candidate)
+                candidate=coordinates[i][1];
+        }
+        return candidate;
+    }
+    
+    public int getYMax()
+    {
+        int candidate = coordinates[0][1];
+        for (int i = 1; i < coordinates.length; i++) 
+        {
+            if(coordinates [i][1]>candidate)
+                candidate=coordinates[i][1];
+        }
+        return candidate;
+    }
+    public void rotate()
+    {
+        
+    }
     
 }
