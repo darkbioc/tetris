@@ -25,7 +25,12 @@ public class Shape {
     
     public Shape(Tetrominoes pieceShape) {
         this.pieceShape = pieceShape;
-        coordinates = coordsTable[pieceShape.ordinal()];
+        coordinates = new int[4][2];
+        for (int point = 0; point < coordinates.length; point++) 
+        {
+            coordinates[point][0] = coordsTable[pieceShape.ordinal()][point][0];
+            coordinates[point][1] = coordsTable[pieceShape.ordinal()][point][1];
+        }
     }
     
     public Shape() {
@@ -89,9 +94,24 @@ public class Shape {
         }
         return candidate;
     }
-    public void rotate()
+    public Shape rotateRight()
     {
-        
+        Shape rotatedShape = new Shape(pieceShape);
+        for (int point = 0; point < coordinates.length; point++)
+        {
+            rotatedShape.coordinates[point][0] = coordinates[point][0];
+            rotatedShape.coordinates[point][1] = coordinates[point][1];
+        }
+        if(pieceShape!=Tetrominoes.SquareShape)
+        {
+           for (int point = 0; point < coordinates.length; point++) 
+            {
+                int temp = rotatedShape.coordinates[point][0];
+                rotatedShape.coordinates[point][0] = rotatedShape.coordinates[point][1];
+                rotatedShape.coordinates[point][1] = -temp;
+            } 
+        }
+        return rotatedShape;
     }
     
 }

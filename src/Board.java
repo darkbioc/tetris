@@ -23,18 +23,22 @@ public class Board extends JPanel implements ActionListener {
         {
         switch (e.getKeyCode()) {
         case KeyEvent.VK_LEFT:
-            if(canMove(currentRow,currentCol-1))
+            if(canMove(currentShape,currentRow,currentCol-1))
                 currentCol--;
             break;
         case KeyEvent.VK_RIGHT:
-            if(canMove(currentRow,currentCol+1))
+            if(canMove(currentShape,currentRow,currentCol+1))
                 currentCol++;
             break;
         case KeyEvent.VK_UP:
-        // whatever
+            Shape rotShape = currentShape.rotateRight();
+            if(canMove(rotShape,currentRow, currentCol))
+            {
+                currentShape=rotShape;
+            }
         break;
         case KeyEvent.VK_DOWN:
-            if(canMove(currentRow+1, currentCol))
+            if(canMove(currentShape,currentRow+1, currentCol))
                 currentRow++;
         break;
         default:
@@ -100,7 +104,7 @@ public class Board extends JPanel implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent ae) 
     {
-        if(canMove(currentRow+1, currentCol))
+        if(canMove(currentShape,currentRow+1, currentCol))
         {
             currentRow++;
             repaint();
@@ -108,6 +112,7 @@ public class Board extends JPanel implements ActionListener {
         else
         {
             moveCurrentShapeToMatrix();
+            checkRows();
             currentShape = new Shape();
             currentRow = INIT_ROW;
             currentCol = NUM_COLS/2;
@@ -179,17 +184,17 @@ public class Board extends JPanel implements ActionListener {
         }
     }
     
-    private boolean canMove(int newRow, int newCol)
+    private boolean canMove(Shape shape, int newRow, int newCol)
     {
-        if(newCol + currentShape.getXMin()<0 || (newCol+currentShape.getXMax()>= NUM_COLS || newRow + currentShape.getYMax()>=NUM_ROWS || hitWithMatrix(newRow, newCol)))
+        if(newCol + shape.getXMin()<0 || (newCol+shape.getXMax()>= NUM_COLS || newRow + shape.getYMax()>=NUM_ROWS || hitWithMatrix(shape,newRow, newCol)))
         {
             return false;
         }
         return true;
     }
-    private boolean hitWithMatrix(int row, int col)
+    private boolean hitWithMatrix(Shape shape, int row, int col)
     {
-        int[][] squaresArray = currentShape.getCoordinates();
+        int[][] squaresArray = shape.getCoordinates();
         for(int point = 0; point<=3; point++)
         {
             int mRow = row+squaresArray[point][1];
@@ -203,5 +208,33 @@ public class Board extends JPanel implements ActionListener {
             }
         }
         return false;
+    }
+    public void checkRows()
+    {
+        for (int i = 0; i < NUM_ROWS; i++) 
+        {
+            int  counter=0;
+            for (int j = 0; j < NUM_COLS; j++) 
+            {
+                if(matrix[i][j]!=Tetrominoes.NoShape)
+                {
+                    counter++;
+                }
+                if(counter==10)
+                {
+                    for (int k = i; k > 0; k--) 
+                    {
+                        for (int l = 0; l < NUM_COLS; l++) 
+                        {
+                            matrix[k][l]=matrix[k-1][l];
+                        }
+                    }
+                    for (int k = 0; k < NUM_COLS; k++) 
+                    {
+                        matrix[0][k]=Tetrominoes.NoShape;
+                    }
+                }
+            }
+        }
     }
 }
