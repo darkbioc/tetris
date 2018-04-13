@@ -59,7 +59,7 @@ public class Board extends JPanel implements ActionListener {
     
     MyKeyAdapter keyAdepter;
     
-    public static final int INIT_ROW = -2;
+    public static final int INIT_ROW = -1;
 
     public Board() {
         super();
@@ -110,6 +110,7 @@ public class Board extends JPanel implements ActionListener {
             moveCurrentShapeToMatrix();
             currentShape = new Shape();
             currentRow = INIT_ROW;
+            currentCol = NUM_COLS/2;
         }
     }
     private void moveCurrentShapeToMatrix()
@@ -117,7 +118,7 @@ public class Board extends JPanel implements ActionListener {
         int[][] squaresArray = currentShape.getCoordinates();
         for(int point = 0; point<=3; point++)
         {
-            
+            matrix[currentRow+squaresArray[point][1]][currentCol+squaresArray[point][0]]=currentShape.getShape();
         }
     }
 
@@ -180,11 +181,27 @@ public class Board extends JPanel implements ActionListener {
     
     private boolean canMove(int newRow, int newCol)
     {
-        if(newCol + currentShape.getXMin()<0 || (newCol+currentShape.getXMax()>= NUM_COLS || newRow + currentShape.getYMax()>=NUM_ROWS))
+        if(newCol + currentShape.getXMin()<0 || (newCol+currentShape.getXMax()>= NUM_COLS || newRow + currentShape.getYMax()>=NUM_ROWS || hitWithMatrix(newRow, newCol)))
         {
             return false;
         }
         return true;
     }
-
+    private boolean hitWithMatrix(int row, int col)
+    {
+        int[][] squaresArray = currentShape.getCoordinates();
+        for(int point = 0; point<=3; point++)
+        {
+            int mRow = row+squaresArray[point][1];
+            int mCol = col+squaresArray[point][0];
+            if(mRow >= 0)
+            {
+                if(matrix[mRow][mCol] != Tetrominoes.NoShape)
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 }
