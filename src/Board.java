@@ -4,6 +4,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.*;
 
 /*
@@ -41,13 +43,26 @@ public class Board extends JPanel implements ActionListener {
             if(canMove(currentShape,currentRow+1, currentCol))
                 currentRow++;
         break;
+        case KeyEvent.VK_P:
+            if(!timer.isRunning())
+            {
+                scoreBoard.resume();;
+                timer.start();
+            }
+            else
+            {
+                timer.stop();
+                scoreBoard.pause();
+            }
+        break;
         default:
         break;
         }
         repaint();
         }
     }
-
+    public ScoreBoard scoreBoard;
+    
     public static final int NUM_ROWS = 22;
     public static final int NUM_COLS = 10;
 
@@ -61,6 +76,7 @@ public class Board extends JPanel implements ActionListener {
 
     private Timer timer;
     
+    private boolean paused=false;
     MyKeyAdapter keyAdepter;
     
     public static final int INIT_ROW = -1;
@@ -90,6 +106,11 @@ public class Board extends JPanel implements ActionListener {
         timer.start();
         addKeyListener(keyAdepter);
         
+    }
+    
+    public void setScoreBoard(ScoreBoard scoreboard)
+    {
+        this.scoreBoard=scoreboard;
     }
 
     public void cleanBoard() {
@@ -222,6 +243,7 @@ public class Board extends JPanel implements ActionListener {
                 }
                 if(counter==10)
                 {
+                    scoreBoard.increment(100);
                     for (int k = i; k > 0; k--) 
                     {
                         for (int l = 0; l < NUM_COLS; l++) 

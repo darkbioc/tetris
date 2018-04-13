@@ -18,14 +18,27 @@ public class ScoreBoard extends JLabel{
     public ScoreBoard() {
         super();
         score = 0;
+        setText("Score: "+score);
     }
     
     public void increment(int points) {
         score += points;
+        setText("Score: "+score);
     }
     
     public void reset() {
         score = 0;
+        setText("Score: "+score);
+    }
+    
+    public void pause()
+    {
+        setText("PAUSED");
+    }
+    
+    public void resume()
+    {
+        setText("Score: "+score);
     }
     
 }
