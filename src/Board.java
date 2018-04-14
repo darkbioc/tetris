@@ -34,10 +34,86 @@ public class Board extends JPanel implements ActionListener {
             break;
         case KeyEvent.VK_UP:
             Shape rotShape = currentShape.rotateRight();
-            if(canMove(rotShape,currentRow, currentCol))
+            if(currentCol==0)
+            {
+                if(canMove(currentShape, currentRow, currentCol+1))
+                {
+                    if(currentShape.getYMin()==-2 && canMove(currentShape, currentRow, currentCol+2))
+                    {
+                        if(!hitWithMatrix(rotShape, currentRow, currentCol+2))
+                                {
+                                    currentCol+=2;
+                                    currentShape=rotShape;
+                                }
+                    }
+                    else if(currentShape.getYMax()==2)
+                    {
+                        if(canMove(rotShape, currentRow, currentCol+1))
+                        {
+                            currentCol++;
+                            currentShape=rotShape;
+                        }
+                    }
+                    else if (currentShape.getYMin()!=-2 )
+                    {
+                        currentCol++;
+                        currentShape=rotShape;
+                    }
+                    
+                }
+            }
+            else if(currentCol==9)
+            {
+                if(canMove(currentShape, currentRow, currentCol-1))
+                {
+                    if(currentShape.getYMax()==2 && canMove(currentShape, currentRow, currentCol-2))
+                    {
+                        if(!hitWithMatrix(rotShape, currentRow, currentCol-2))
+                        {
+                            currentCol-=2;
+                            currentShape=rotShape;
+                        }                      
+                    }
+                    else if(currentShape.getYMin()==-2)
+                    {
+                        if(canMove(rotShape, currentRow, currentCol-1))
+                        {
+                            currentCol--;
+                            currentShape=rotShape;
+                        }
+                    }
+                    else if(currentShape.getYMax()!=2)
+                    {
+                        currentCol--;
+                        currentShape=rotShape;
+                    }
+                }
+            }
+            else if(currentCol==8 && currentShape.getYMax()==2)
+            {
+                if(!hitWithMatrix(rotShape, currentRow, currentCol-1))
+                {
+                    currentCol--;
+                    currentShape=rotShape;
+                }
+            }
+            else if(currentCol==1 && currentShape.getYMin()==-2)
+            {
+                if(!hitWithMatrix(rotShape, currentRow, currentCol+1))
+                {
+                    currentCol++;
+                    currentShape=rotShape;
+                }
+            }
+            else if(!hitWithMatrix(rotShape, currentRow, currentCol))
             {
                 currentShape=rotShape;
             }
+            
+            /*if(canMove(rotShape,currentRow, currentCol))
+            {
+                currentShape=rotShape;
+            }*/
         break;
         case KeyEvent.VK_DOWN:
             if(canMove(currentShape,currentRow+1, currentCol))
@@ -127,6 +203,7 @@ public class Board extends JPanel implements ActionListener {
     {
         if(canMove(currentShape,currentRow+1, currentCol))
         {
+            System.out.println("Current col: "+currentCol+" YMax: "+currentShape.getYMax()+" YMin: "+currentShape.getYMin());
             currentRow++;
             repaint();
         }
