@@ -4,8 +4,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.*;
 
 /*
@@ -34,7 +32,7 @@ public class Board extends JPanel implements ActionListener {
             break;
         case KeyEvent.VK_UP:
             Shape rotShape = currentShape.rotateRight();
-            if(currentCol==0)
+            if(currentCol==0 && !(currentShape.getXMax()==1 && currentShape.getXMin()==0 && currentShape.getYMax()==1 && currentShape.getYMin()==0))
             {
                 if(canMove(currentShape, currentRow, currentCol+1))
                 {
@@ -109,7 +107,19 @@ public class Board extends JPanel implements ActionListener {
             {
                 currentShape=rotShape;
             }
-            
+            else if(hitWithMatrix(rotShape, currentRow, currentCol))
+            {
+                if(!hitWithMatrix(rotShape, currentRow, currentCol+1))
+                {
+                    currentCol++;
+                    currentShape=rotShape;
+                }
+                if(!hitWithMatrix(rotShape, currentRow, currentCol-1))
+                {
+                    currentCol--;
+                    currentShape=rotShape;
+                }
+            }
             /*if(canMove(rotShape,currentRow, currentCol))
             {
                 currentShape=rotShape;
@@ -122,7 +132,7 @@ public class Board extends JPanel implements ActionListener {
         case KeyEvent.VK_P:
             if(!timer.isRunning())
             {
-                scoreBoard.resume();;
+                scoreBoard.resume();
                 timer.start();
             }
             else
