@@ -246,7 +246,7 @@ public final class Board extends JPanel implements ActionListener {
     {
         if(canMove(currentShape,currentRow+1, currentCol))
         {
-            System.out.println("Current col: "+currentCol+" YMax: "+currentShape.getYMax()+" YMin: "+currentShape.getYMin()+" Current row: "+currentRow+" DTime: "+deltaTime+" Score: "+scoreBoard.getScore());
+            //System.out.println("Current col: "+currentCol+" YMax: "+currentShape.getYMax()+" YMin: "+currentShape.getYMin()+" Current row: "+currentRow+" DTime: "+deltaTime+" Score: "+scoreBoard.getScore());
             currentRow++;
             repaint();
         }
@@ -380,7 +380,7 @@ public final class Board extends JPanel implements ActionListener {
                     dRows++;
                     scoreBoard.increment(100);
                     if(dRows==4)
-                        scoreBoard.increment(50);
+                        scoreBoard.increment(100);
                     if(scoreBoard.getScore()%(500*scoreBoard.getLevel()*scoreBoard.getLevel())==0 && deltaTime!=50)
                     {
                         scoreBoard.newLevel();
@@ -422,7 +422,7 @@ public final class Board extends JPanel implements ActionListener {
     public void playSong() 
     {
         try {
-            music = new FileInputStream(new File("Level "+(scoreBoard.getLevel()-1)+".wav"));
+            music = getClass().getResourceAsStream("/Level "+(scoreBoard.getLevel()-1)+".wav");
             audios = new AudioStream(music);
             AudioPlayer.player.start(audios);
             
