@@ -384,7 +384,7 @@ public final class Board extends JPanel implements ActionListener {
                     if(scoreBoard.getScore()%(500*scoreBoard.getLevel()*scoreBoard.getLevel())==0 && deltaTime!=50)
                     {
                         scoreBoard.newLevel();
-                        deltaTime-=100;
+                        deltaTime-=50;
                         timer.setDelay(deltaTime);
                         AudioPlayer.player.stop(audios);
                         playSong();
@@ -414,7 +414,7 @@ public final class Board extends JPanel implements ActionListener {
         repaint();
         scoreBoard.gameOver();
         AudioPlayer.player.stop(audios);
-        music=new FileInputStream(new File("High Scores.wav"));
+        music=getClass().getResourceAsStream("/High Scores.wav");
         audios = new AudioStream(music);
         AudioPlayer.player.start(audios);
         
