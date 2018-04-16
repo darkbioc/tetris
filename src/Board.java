@@ -167,6 +167,18 @@ public final class Board extends JPanel implements ActionListener {
                 scoreBoard.pause();
             }
         break;
+        
+        case KeyEvent.VK_M:
+            if (!musicStopped)
+            {
+                AudioPlayer.player.stop(audios);
+                musicStopped=true;
+            }
+            else
+            {
+                AudioPlayer.player.start(audios);
+                musicStopped=false;
+            }
         default:
         break;
         }
@@ -191,7 +203,7 @@ public final class Board extends JPanel implements ActionListener {
 
     private final Timer timer;
     
-    private final boolean paused=false;
+    private boolean musicStopped;
     MyKeyAdapter keyAdepter;
     
     public static final int INIT_ROW = -1;
@@ -416,15 +428,22 @@ public final class Board extends JPanel implements ActionListener {
         AudioPlayer.player.stop(audios);
         music=getClass().getResourceAsStream("/High Scores.wav");
         audios = new AudioStream(music);
-        AudioPlayer.player.start(audios);
+        if(!musicStopped)
+        {
+            AudioPlayer.player.start(audios);
+        }
         
     }
     public void playSong() 
     {
+        
         try {
             music = getClass().getResourceAsStream("/Level "+(scoreBoard.getLevel()-1)+".wav");
             audios = new AudioStream(music);
-            AudioPlayer.player.start(audios);
+            if (!musicStopped)
+            {
+                AudioPlayer.player.start(audios);
+            }
             
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e.getLocalizedMessage());
