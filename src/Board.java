@@ -4,6 +4,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.*;
 
 /*
@@ -15,7 +17,7 @@ import javax.swing.*;
  *
  * @author victor
  */
-public class Board extends JPanel implements ActionListener {
+public final class Board extends JPanel implements ActionListener {
     class MyKeyAdapter extends KeyAdapter 
     {
         @Override
@@ -32,98 +34,117 @@ public class Board extends JPanel implements ActionListener {
             break;
         case KeyEvent.VK_UP:
             Shape rotShape = currentShape.rotateRight();
-            if(currentCol==0 && !(currentShape.getXMax()==1 && currentShape.getXMin()==0 && currentShape.getYMax()==1 && currentShape.getYMin()==0))
-            {
-                if(canMove(currentShape, currentRow, currentCol+1))
+            /*if(currentRow!=20)
+            {*/
+                if(currentCol==0 && !(currentShape.getXMax()==1 && currentShape.getXMin()==0 && currentShape.getYMax()==1 && currentShape.getYMin()==0))
                 {
-                    if(currentShape.getYMin()==-2 && canMove(currentShape, currentRow, currentCol+2))
+                    if(canMove(currentShape, currentRow, currentCol+1))
                     {
-                        if(!hitWithMatrix(rotShape, currentRow, currentCol+2))
-                                {
-                                    currentCol+=2;
-                                    currentShape=rotShape;
-                                }
-                    }
-                    else if(currentShape.getYMax()==2)
-                    {
-                        if(canMove(rotShape, currentRow, currentCol+1))
+                        if(currentShape.getYMin()==-2 && canMove(currentShape, currentRow, currentCol+2))
+                        {
+                            if(canMove(rotShape, currentRow, currentCol+2))
+                            {
+                                currentCol+=2;
+                                currentShape=rotShape;
+                            }
+                        }
+                        else if(currentShape.getYMax()==2)
+                        {
+                            if(canMove(rotShape, currentRow, currentCol+1))
+                            {
+                                currentCol++;
+                                currentShape=rotShape;
+                            }
+                        }
+                        else if (currentShape.getYMin()!=-2 )
                         {
                             currentCol++;
                             currentShape=rotShape;
-                        }
+                        }                    
                     }
-                    else if (currentShape.getYMin()!=-2 )
-                    {
-                        currentCol++;
-                        currentShape=rotShape;
-                    }
-                    
                 }
-            }
-            else if(currentCol==9)
-            {
-                if(canMove(currentShape, currentRow, currentCol-1))
+                else if(currentCol==NUM_COLS-1)
                 {
-                    if(currentShape.getYMax()==2 && canMove(currentShape, currentRow, currentCol-2))
+                    if(canMove(currentShape, currentRow, currentCol-1))
                     {
-                        if(!hitWithMatrix(rotShape, currentRow, currentCol-2))
+                        if(currentShape.getYMax()==2 && canMove(currentShape, currentRow, currentCol-2))
                         {
-                            currentCol-=2;
-                            currentShape=rotShape;
-                        }                      
-                    }
-                    else if(currentShape.getYMin()==-2)
-                    {
-                        if(canMove(rotShape, currentRow, currentCol-1))
+                            if(canMove(rotShape, currentRow, currentCol-2))
+                            {
+                                currentCol-=2;
+                                currentShape=rotShape;
+                            }                      
+                        }
+                        else if(currentShape.getYMin()==-2)
+                        {
+                            if(canMove(rotShape, currentRow, currentCol-1))
+                            {
+                                currentCol--;
+                                currentShape=rotShape;
+                            }
+                        }
+                        else if(currentShape.getYMax()!=2)
                         {
                             currentCol--;
                             currentShape=rotShape;
                         }
                     }
-                    else if(currentShape.getYMax()!=2)
+                }
+                else if(currentCol==NUM_COLS-2 && currentShape.getYMax()==2)
+                {
+                    if(canMove(rotShape, currentRow, currentCol-1))
                     {
                         currentCol--;
                         currentShape=rotShape;
                     }
                 }
-            }
-            else if(currentCol==8 && currentShape.getYMax()==2)
-            {
-                if(!hitWithMatrix(rotShape, currentRow, currentCol-1))
+                else if(currentCol==1 && currentShape.getYMin()==-2)
                 {
-                    currentCol--;
+                    if(canMove(rotShape, currentRow, currentCol+1))
+                    {
+                        currentCol++;
+                        currentShape=rotShape;
+                    }
+                }
+                else if(canMove(rotShape, currentRow, currentCol))
+                {
                     currentShape=rotShape;
                 }
-            }
-            else if(currentCol==1 && currentShape.getYMin()==-2)
-            {
-                if(!hitWithMatrix(rotShape, currentRow, currentCol+1))
+                else if(!canMove(rotShape, currentRow, currentCol))
                 {
-                    currentCol++;
-                    currentShape=rotShape;
-                }
-            }
-            else if(!hitWithMatrix(rotShape, currentRow, currentCol))
-            {
-                currentShape=rotShape;
-            }
-            else if(hitWithMatrix(rotShape, currentRow, currentCol))
-            {
-                if(!hitWithMatrix(rotShape, currentRow, currentCol+1))
-                {
-                    currentCol++;
-                    currentShape=rotShape;
-                }
-                if(!hitWithMatrix(rotShape, currentRow, currentCol-1))
-                {
-                    currentCol--;
-                    currentShape=rotShape;
-                }
-            }
+                    if(canMove(rotShape, currentRow, currentCol+1))
+                    {
+                        currentCol++;
+                        currentShape=rotShape;
+                    }
+                    if(canMove(rotShape, currentRow, currentCol-1))
+                    {
+                        currentCol--;
+                        currentShape=rotShape;
+                    }
+                    if(!canMove(rotShape, currentRow, currentCol+1) && currentShape.getYMin()==-2)
+                    {
+                        if(canMove(rotShape, currentRow, currentCol+2))
+                        {
+                            currentCol+=2;
+                            currentShape=rotShape;
+                        }
+                    }
+                    if(!canMove(rotShape, currentRow, currentCol-1) && currentShape.getYMax()==2)
+                    {
+                        if(canMove(rotShape, currentRow, currentCol-2))
+                        {
+                            currentCol-=2;
+                            currentShape=rotShape;
+                        }
+                    }
+                //}
             /*if(canMove(rotShape,currentRow, currentCol))
             {
                 currentShape=rotShape;
             }*/
+            }
+            
         break;
         case KeyEvent.VK_DOWN:
             if(canMove(currentShape,currentRow+1, currentCol))
@@ -152,7 +173,7 @@ public class Board extends JPanel implements ActionListener {
     public static final int NUM_ROWS = 22;
     public static final int NUM_COLS = 10;
 
-    private Tetrominoes[][] matrix;
+    private final Tetrominoes[][] matrix;
     private int deltaTime;
 
     private Shape currentShape;
@@ -160,9 +181,9 @@ public class Board extends JPanel implements ActionListener {
     private int currentRow;
     private int currentCol;
 
-    private Timer timer;
+    private final Timer timer;
     
-    private boolean paused=false;
+    private final boolean paused=false;
     MyKeyAdapter keyAdepter;
     
     public static final int INIT_ROW = -1;
@@ -188,6 +209,7 @@ public class Board extends JPanel implements ActionListener {
     public void initGame() {
         removeKeyListener(keyAdepter);
         initValues();
+        timer.setDelay(deltaTime);
         currentShape = new Shape();
         timer.start();
         addKeyListener(keyAdepter);
@@ -213,17 +235,27 @@ public class Board extends JPanel implements ActionListener {
     {
         if(canMove(currentShape,currentRow+1, currentCol))
         {
-            System.out.println("Current col: "+currentCol+" YMax: "+currentShape.getYMax()+" YMin: "+currentShape.getYMin());
+            System.out.println("Current col: "+currentCol+" YMax: "+currentShape.getYMax()+" YMin: "+currentShape.getYMin()+" Current row: "+currentRow+" DTime: "+deltaTime+" Score: "+scoreBoard.getScore());
             currentRow++;
             repaint();
         }
         else
         {
-            moveCurrentShapeToMatrix();
-            checkRows();
-            currentShape = new Shape();
-            currentRow = INIT_ROW;
-            currentCol = NUM_COLS/2;
+            if(currentShape.getYMin()+currentRow<0)
+            {
+               
+                gameOver();
+                timer.stop();
+            }
+            else
+            {
+                moveCurrentShapeToMatrix();
+                checkRows();
+                currentShape = new Shape();
+                currentRow = INIT_ROW;
+                currentCol = NUM_COLS/2;
+            }
+            
         }
     }
     private void moveCurrentShapeToMatrix()
@@ -294,11 +326,7 @@ public class Board extends JPanel implements ActionListener {
     
     private boolean canMove(Shape shape, int newRow, int newCol)
     {
-        if(newCol + shape.getXMin()<0 || (newCol+shape.getXMax()>= NUM_COLS || newRow + shape.getYMax()>=NUM_ROWS || hitWithMatrix(shape,newRow, newCol)))
-        {
-            return false;
-        }
-        return true;
+        return !(newCol + shape.getXMin()<0 || (newCol+shape.getXMax()>= NUM_COLS || newRow + shape.getYMax()>=NUM_ROWS || hitWithMatrix(shape,newRow, newCol)));
     }
     private boolean hitWithMatrix(Shape shape, int row, int col)
     {
@@ -319,6 +347,7 @@ public class Board extends JPanel implements ActionListener {
     }
     public void checkRows()
     {
+        int dRows = 0;
         for (int i = 0; i < NUM_ROWS; i++) 
         {
             int  counter=0;
@@ -330,13 +359,19 @@ public class Board extends JPanel implements ActionListener {
                 }
                 if(counter==10)
                 {
+                    dRows++;
                     scoreBoard.increment(100);
+                    if(dRows==4)
+                        scoreBoard.increment(50);
+                    if(scoreBoard.getScore()%(500*scoreBoard.getLevel()*scoreBoard.getLevel())==0 && deltaTime!=50)
+                    {
+                        scoreBoard.newLevel();
+                        deltaTime-=100;
+                        timer.setDelay(deltaTime);
+                    }
                     for (int k = i; k > 0; k--) 
                     {
-                        for (int l = 0; l < NUM_COLS; l++) 
-                        {
-                            matrix[k][l]=matrix[k-1][l];
-                        }
+                        System.arraycopy(matrix[k-1], 0, matrix[k], 0, NUM_COLS);
                     }
                     for (int k = 0; k < NUM_COLS; k++) 
                     {
@@ -345,5 +380,18 @@ public class Board extends JPanel implements ActionListener {
                 }
             }
         }
+    }
+    public void gameOver()
+    {
+        for (int row = 0; row < NUM_ROWS; row++) 
+        {
+            for (int col = 0; col < NUM_COLS; col++) 
+            {
+                matrix[row][col] = Tetrominoes.LineShape;
+            }
+        }
+        currentShape=null;
+        repaint();
+        scoreBoard.gameOver();
     }
 }
