@@ -4,10 +4,15 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.*;
-
+import sun.audio.*;
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -180,6 +185,9 @@ public final class Board extends JPanel implements ActionListener {
 
     private int currentRow;
     private int currentCol;
+    
+    private AudioStream audios=null;
+    private InputStream music;
 
     private final Timer timer;
     
@@ -207,12 +215,15 @@ public final class Board extends JPanel implements ActionListener {
     }
 
     public void initGame() {
+        AudioPlayer.player.stop(audios);
         removeKeyListener(keyAdepter);
         initValues();
+        scoreBoard.reset();
         timer.setDelay(deltaTime);
         currentShape = new Shape();
         timer.start();
         addKeyListener(keyAdepter);
+        playSong();
         
     }
     
@@ -244,7 +255,14 @@ public final class Board extends JPanel implements ActionListener {
             if(currentShape.getYMin()+currentRow<0)
             {
                
-                gameOver();
+                try 
+                {
+                    gameOver();
+                } 
+                catch (IOException ex) 
+                {
+                    Logger.getLogger(Board.class.getName()).log(Level.SEVERE, null, ex);
+                }
                 timer.stop();
             }
             else
@@ -368,6 +386,8 @@ public final class Board extends JPanel implements ActionListener {
                         scoreBoard.newLevel();
                         deltaTime-=100;
                         timer.setDelay(deltaTime);
+                        AudioPlayer.player.stop(audios);
+                        playSong();
                     }
                     for (int k = i; k > 0; k--) 
                     {
@@ -381,7 +401,7 @@ public final class Board extends JPanel implements ActionListener {
             }
         }
     }
-    public void gameOver()
+    public void gameOver() throws FileNotFoundException, IOException
     {
         for (int row = 0; row < NUM_ROWS; row++) 
         {
@@ -393,5 +413,21 @@ public final class Board extends JPanel implements ActionListener {
         currentShape=null;
         repaint();
         scoreBoard.gameOver();
+        AudioPlayer.player.stop(audios);
+        music=new FileInputStream(new File("High Scores.wav"));
+        audios = new AudioStream(music);
+        AudioPlayer.player.start(audios);
+        
+    }
+    public void playSong() 
+    {
+        try {
+            music = new FileInputStream(new File("Level "+(scoreBoard.getLevel()-1)+".wav"));
+            audios = new AudioStream(music);
+            AudioPlayer.player.start(audios);
+            
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e.getLocalizedMessage());
+        }
     }
 }
