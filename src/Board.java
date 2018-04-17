@@ -156,28 +156,38 @@ public final class Board extends JPanel implements ActionListener {
                 currentRow++;
         break;
         case KeyEvent.VK_P:
-            if(!timer.isRunning())
-            {
-                scoreBoard.resume();
-                timer.start();
-            }
-            else
-            {
-                timer.stop();
-                scoreBoard.pause();
+            if(!gameOver)
+            {    
+                if(!timer.isRunning())
+                {
+                    if(!musicStopped)
+                        AudioPlayer.player.start(audios);
+                    scoreBoard.resume();
+                    timer.start();
+                }
+                else
+                {
+                    if(!musicStopped)
+                        AudioPlayer.player.stop(audios);
+                    timer.stop();
+                    scoreBoard.pause();
+                }
             }
         break;
         
         case KeyEvent.VK_M:
-            if (!musicStopped)
+            if (gameOver || timer.isRunning())
             {
-                AudioPlayer.player.stop(audios);
-                musicStopped=true;
-            }
-            else
-            {
-                AudioPlayer.player.start(audios);
-                musicStopped=false;
+                if (!musicStopped)
+                    {
+                        AudioPlayer.player.stop(audios);
+                        musicStopped=true;
+                    }
+                    else
+                    {
+                        AudioPlayer.player.start(audios);
+                        musicStopped=false;
+                    }
             }
         default:
         break;
@@ -200,6 +210,7 @@ public final class Board extends JPanel implements ActionListener {
     
     private AudioStream audios=null;
     private InputStream music;
+    private boolean gameOver;
 
     private final Timer timer;
     
@@ -233,6 +244,7 @@ public final class Board extends JPanel implements ActionListener {
         scoreBoard.reset();
         timer.setDelay(deltaTime);
         currentShape = new Shape();
+        gameOver=false;
         timer.start();
         addKeyListener(keyAdepter);
         playSong();
@@ -356,7 +368,7 @@ public final class Board extends JPanel implements ActionListener {
     
     private boolean canMove(Shape shape, int newRow, int newCol)
     {
-        return !(newCol + shape.getXMin()<0 || (newCol+shape.getXMax()>= NUM_COLS || newRow + shape.getYMax()>=NUM_ROWS || hitWithMatrix(shape,newRow, newCol)));
+        return !(!timer.isRunning() || newCol + shape.getXMin()<0 || (newCol+shape.getXMax()>= NUM_COLS || newRow + shape.getYMax()>=NUM_ROWS || hitWithMatrix(shape,newRow, newCol)));
     }
     private boolean hitWithMatrix(Shape shape, int row, int col)
     {
@@ -423,6 +435,7 @@ public final class Board extends JPanel implements ActionListener {
             }
         }
         currentShape=null;
+        gameOver=true;
         repaint();
         scoreBoard.gameOver();
         AudioPlayer.player.stop(audios);
