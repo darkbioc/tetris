@@ -156,6 +156,15 @@ public final class Board extends JPanel implements ActionListener {
                 currentRow++;
         break;
         case KeyEvent.VK_P:
+            effect=getClass().getResourceAsStream("/Pause.wav");
+        {
+            try {
+                effectAudio = new AudioStream(effect);
+            } catch (IOException ex) {
+                Logger.getLogger(Board.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+            AudioPlayer.player.start(effectAudio);
             if(!gameOver)
             {    
                 if(!timer.isRunning())
@@ -210,6 +219,8 @@ public final class Board extends JPanel implements ActionListener {
     
     private AudioStream audios=null;
     private InputStream music;
+    private InputStream effect;
+    private AudioStream effectAudio;
     private boolean gameOver;
 
     private final Timer timer;
@@ -292,7 +303,11 @@ public final class Board extends JPanel implements ActionListener {
             else
             {
                 moveCurrentShapeToMatrix();
-                checkRows();
+                try {
+                    checkRows();
+                } catch (IOException ex) {
+                    Logger.getLogger(Board.class.getName()).log(Level.SEVERE, null, ex);
+                }
                 currentShape = new Shape();
                 currentRow = INIT_ROW;
                 currentCol = NUM_COLS/2;
@@ -387,7 +402,7 @@ public final class Board extends JPanel implements ActionListener {
         }
         return false;
     }
-    public void checkRows()
+    public void checkRows() throws IOException
     {
         int dRows = 0;
         for (int i = 0; i < NUM_ROWS; i++) 
@@ -403,13 +418,24 @@ public final class Board extends JPanel implements ActionListener {
                 {
                     dRows++;
                     scoreBoard.increment(100);
+                    effect=getClass().getResourceAsStream("/Line.wav");
+                    effectAudio = new AudioStream(effect);
+                    AudioPlayer.player.start(effectAudio);
                     if(dRows==4)
+                    {
+                        effect=getClass().getResourceAsStream("/Tetris.wav");
+                        effectAudio = new AudioStream(effect);
+                        AudioPlayer.player.start(effectAudio);
                         scoreBoard.increment(100);
+                    }
                     if(scoreBoard.getScore()%(500*scoreBoard.getLevel()*scoreBoard.getLevel())==0 && deltaTime!=50)
                     {
                         scoreBoard.newLevel();
                         deltaTime-=50;
                         timer.setDelay(deltaTime);
+                        effect=getClass().getResourceAsStream("/LevelUp.wav");
+                        effectAudio = new AudioStream(effect);
+                        AudioPlayer.player.start(effectAudio);
                         AudioPlayer.player.stop(audios);
                         playSong();
                     }
