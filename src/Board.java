@@ -1,17 +1,11 @@
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.awt.event.*;
+import java.io.*;
+import java.util.*;
+import java.util.logging.*;
 import javax.swing.*;
+import javax.swing.Timer;
 import sun.audio.*;
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -158,9 +152,12 @@ public final class Board extends JPanel implements ActionListener {
         case KeyEvent.VK_P:
             effect=getClass().getResourceAsStream("/Pause.wav");
         {
-            try {
+            try 
+            {
                 effectAudio = new AudioStream(effect);
-            } catch (IOException ex) {
+            } 
+            catch (IOException ex) 
+            {
                 Logger.getLogger(Board.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
@@ -169,6 +166,7 @@ public final class Board extends JPanel implements ActionListener {
             {    
                 if(!timer.isRunning())
                 {
+                    pausePanel.setVisible(false);
                     if(!musicStopped)
                         AudioPlayer.player.start(audios);
                     scoreBoard.resume();
@@ -176,6 +174,7 @@ public final class Board extends JPanel implements ActionListener {
                 }
                 else
                 {
+                    pausePanel.setVisible(true);
                     if(!musicStopped)
                         AudioPlayer.player.stop(audios);
                     timer.stop();
@@ -211,9 +210,8 @@ public final class Board extends JPanel implements ActionListener {
 
     private final Tetrominoes[][] matrix;
     private int deltaTime;
-
+    private NextPiecePanel nextPiecePanel;
     private Shape currentShape;
-
     private int currentRow;
     private int currentCol;
     
@@ -238,6 +236,18 @@ public final class Board extends JPanel implements ActionListener {
         keyAdepter= new MyKeyAdapter();
         
     }
+    
+    public void setNextPiecePanel(NextPiecePanel p)
+    {
+        nextPiecePanel = p;
+    }
+    
+    public void setPausePanel(JPanel p)
+    {
+        pausePanel=p;
+    }
+    
+    private JPanel pausePanel;
 
     public void initValues() {
         setFocusable(true);
@@ -254,6 +264,7 @@ public final class Board extends JPanel implements ActionListener {
         initValues();
         scoreBoard.reset();
         timer.setDelay(deltaTime);
+        nextPiecePanel.generateNewShape();
         currentShape = new Shape();
         gameOver=false;
         timer.start();
@@ -308,7 +319,8 @@ public final class Board extends JPanel implements ActionListener {
                 } catch (IOException ex) {
                     Logger.getLogger(Board.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                currentShape = new Shape();
+                currentShape = nextPiecePanel.getShape();
+                nextPiecePanel.generateNewShape();
                 currentRow = INIT_ROW;
                 currentCol = NUM_COLS/2;
             }
@@ -329,7 +341,7 @@ public final class Board extends JPanel implements ActionListener {
         super.paintComponent(g);
         drawBoard(g);
         if (currentShape!=null)
-        drawCurrentShape(g);
+        currentShape.draw(g, currentRow, currentCol, squareWidth(), squareHeight());
     }
     public void drawBoard(Graphics g)
     {
@@ -337,33 +349,11 @@ public final class Board extends JPanel implements ActionListener {
         {
             for (int col = 0; col < NUM_COLS; col++) 
             {
-                drawSquare(g, row, col, matrix[row][col]);
+                Util.drawSquare(g, row, col, matrix[row][col],squareWidth(),squareHeight());
             }
         }
     }
-    private void drawSquare(Graphics g, int row, int col, Tetrominoes shape) {
-        Color colors[] = {new Color(0, 0, 0),
-            new Color(204, 102, 102),
-            new Color(102, 204, 102), new Color(102, 102, 204),
-            new Color(204, 204, 102), new Color(204, 102, 204),
-            new Color(102, 204, 204), new Color(218, 170, 0)
-        };
-        int x = col * squareWidth();
-        int y = row * squareHeight();
-        Color color = colors[shape.ordinal()];
-        g.setColor(color);
-        g.fillRect(x + 1, y + 1, squareWidth() - 2,
-                squareHeight() - 2);
-        g.setColor(color.brighter());
-        g.drawLine(x, y + squareHeight() - 1, x, y);
-        g.drawLine(x, y, x + squareWidth() - 1, y);
-        g.setColor(color.darker());
-        g.drawLine(x + 1, y + squareHeight() - 1,
-                x + squareWidth() - 1, y + squareHeight() - 1);
-        g.drawLine(x + squareWidth() - 1,
-                y + squareHeight() - 1,
-                x + squareWidth() - 1, y + 1);
-    }
+ 
     
     private int squareWidth() {
         return getWidth() / NUM_COLS;
@@ -371,14 +361,6 @@ public final class Board extends JPanel implements ActionListener {
     
     private int squareHeight() {
         return getHeight() / NUM_ROWS;
-    }
-    private void drawCurrentShape(Graphics g) 
-    {
-    int[][] squaresArray = currentShape.getCoordinates();
-    for(int point = 0; point<=3; point++)
-        {
-        drawSquare(g, currentRow + squaresArray[point][1], currentCol + squaresArray[point][0], currentShape.getShape());
-        }
     }
     
     private boolean canMove(Shape shape, int newRow, int newCol)
@@ -467,6 +449,7 @@ public final class Board extends JPanel implements ActionListener {
         AudioPlayer.player.stop(audios);
         music=getClass().getResourceAsStream("/High Scores.wav");
         audios = new AudioStream(music);
+        nextPiecePanel.setVisible(false);
         if(!musicStopped)
         {
             AudioPlayer.player.start(audios);
