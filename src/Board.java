@@ -197,6 +197,26 @@ public final class Board extends JPanel implements ActionListener {
                         musicStopped=false;
                     }
             }
+        case KeyEvent.VK_C:
+            if(!swapped)
+            {
+                if(firstSwap)
+                {
+                    holdPanel.swapShape(currentShape);
+                    currentShape = nextPiecePanel.getShape();
+                    nextPiecePanel.generateNewShape();
+                    firstSwap=false;
+                }
+                else
+                {
+                    currentShape=holdPanel.swapShape(currentShape);
+                }
+                currentRow = INIT_ROW;
+                currentCol = NUM_COLS/2;
+                swapped=true;
+            }
+            
+        break;
         default:
         break;
         }
@@ -214,13 +234,14 @@ public final class Board extends JPanel implements ActionListener {
     private Shape currentShape;
     private int currentRow;
     private int currentCol;
-    
+    private HoldPanel holdPanel;
     private AudioStream audios=null;
     private InputStream music;
     private InputStream effect;
     private AudioStream effectAudio;
     private boolean gameOver;
-
+    private boolean swapped;
+    private boolean firstSwap;
     private final Timer timer;
     
     private boolean musicStopped;
@@ -241,7 +262,10 @@ public final class Board extends JPanel implements ActionListener {
     {
         nextPiecePanel = p;
     }
-    
+    public void setHoldPanel(HoldPanel p)
+    {
+        holdPanel = p;
+    }
     public void setPausePanel(JPanel p)
     {
         pausePanel=p;
@@ -265,9 +289,12 @@ public final class Board extends JPanel implements ActionListener {
         scoreBoard.reset();
         timer.setDelay(deltaTime);
         nextPiecePanel.generateNewShape();
+        holdPanel.clearShape();
         currentShape = new Shape();
         gameOver=false;
         timer.start();
+        swapped=false;
+        firstSwap=true;
         addKeyListener(keyAdepter);
         playSong();
         
@@ -313,6 +340,7 @@ public final class Board extends JPanel implements ActionListener {
             }
             else
             {
+                swapped=false;
                 moveCurrentShapeToMatrix();
                 try {
                     checkRows();
