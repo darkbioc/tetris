@@ -19,7 +19,6 @@ public class ScoreBoard extends JLabel{
     public ScoreBoard() {
         super();
         score = 0;
-        level = 1;
         setText("Score: "+score+" Level:"+level );
     }
     
@@ -36,7 +35,6 @@ public class ScoreBoard extends JLabel{
     
     public void reset() {
         score = 0;
-        level=1;
         setText("Score: "+score+" Level:"+level);
     }
     
@@ -52,6 +50,10 @@ public class ScoreBoard extends JLabel{
     public int getScore()
     {
         return score;
+    }
+    public void setLevel(int newLevel)
+    {
+        level=newLevel;
     }
     public int getLevel()
     {

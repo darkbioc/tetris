@@ -58,53 +58,12 @@ public final class Board extends JPanel implements ActionListener {
             }
         break;
         case KeyEvent.VK_P:
-            effect=getClass().getResourceAsStream("/Pause.wav");
-        {
-            try 
-            {
-                effectAudio = new AudioStream(effect);
-            } 
-            catch (IOException ex) 
-            {
-                Logger.getLogger(Board.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-            AudioPlayer.player.start(effectAudio);
-            if(!gameOver)
-            {    
-                if(!timer.isRunning())
-                {
-                    pausePanel.setVisible(false);
-                    if(!musicStopped)
-                        AudioPlayer.player.start(audios);
-                    scoreBoard.resume();
-                    timer.start();
-                }
-                else
-                {
-                    pausePanel.setVisible(true);
-                    if(!musicStopped)
-                        AudioPlayer.player.stop(audios);
-                    timer.stop();
-                    scoreBoard.pause();
-                }
-            }
+            
         break;
         
         case KeyEvent.VK_M:
-            if (gameOver || timer.isRunning())
-            {
-                if (!musicStopped)
-                    {
-                        AudioPlayer.player.stop(audios);
-                        musicStopped=true;
-                    }
-                    else
-                    {
-                        AudioPlayer.player.start(audios);
-                        musicStopped=false;
-                    }
-            }
+            switchMusic();
+            break;
         case KeyEvent.VK_C:
             if (!gameOver && timer.isRunning())
             {
@@ -185,7 +144,7 @@ public final class Board extends JPanel implements ActionListener {
     public void initValues() {
         setFocusable(true);
         cleanBoard();
-        deltaTime = 500;
+        deltaTime = 500-(50*scoreBoard.getLevel());
         currentShape = null;
         currentRow = INIT_ROW;
         currentCol = NUM_COLS / 2;
@@ -554,5 +513,59 @@ public final class Board extends JPanel implements ActionListener {
                 currentCol = NUM_COLS/2;
                 swapped=true;
             }
+    }
+    public void switchMusic()
+    {
+        if (gameOver || timer.isRunning())
+            {
+                if (!musicStopped)
+                    {
+                        AudioPlayer.player.stop(audios);
+                        musicStopped=true;
+                    }
+                    else
+                    {
+                        AudioPlayer.player.start(audios);
+                        musicStopped=false;
+                    }
+            }
+    }
+    public void switchPause()
+    {
+        effect=getClass().getResourceAsStream("/Pause.wav");
+        
+            try 
+            {
+                effectAudio = new AudioStream(effect);
+            } 
+            catch (IOException ex) 
+            {
+                Logger.getLogger(Board.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        
+            AudioPlayer.player.start(effectAudio);
+            if(!gameOver)
+            {    
+                if(!timer.isRunning())
+                {
+                    pausePanel.setVisible(false);
+                    if(!musicStopped)
+                        AudioPlayer.player.start(audios);
+                    scoreBoard.resume();
+                    timer.start();
+                }
+                else
+                {
+                    pausePanel.setVisible(true);
+                    if(!musicStopped)
+                        AudioPlayer.player.stop(audios);
+                    timer.stop();
+                    scoreBoard.pause();
+                }
+            }
+    }
+    public void setInitialLevel(int ilevel)
+    {
+        scoreBoard.setLevel(ilevel);
     }
 }
