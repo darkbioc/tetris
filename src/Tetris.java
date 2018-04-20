@@ -54,23 +54,27 @@ public class Tetris extends javax.swing.JFrame {
         );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Tetris by DarkBioc");
+        setBackground(new java.awt.Color(0, 0, 0));
+        setPreferredSize(new java.awt.Dimension(390, 690));
         setResizable(false);
 
+        board.setBackground(new java.awt.Color(0, 0, 0));
         board.setPreferredSize(new java.awt.Dimension(192, 330));
 
         pausePanel.setVisible(false);
-        pausePanel.setBackground(new java.awt.Color(238, 100, 100));
+        pausePanel.setBackground(new java.awt.Color(0, 0, 0));
         pausePanel.setPreferredSize(new java.awt.Dimension(192, 330));
 
         javax.swing.GroupLayout pausePanelLayout = new javax.swing.GroupLayout(pausePanel);
         pausePanel.setLayout(pausePanelLayout);
         pausePanelLayout.setHorizontalGroup(
             pausePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 178, Short.MAX_VALUE)
+            .addGap(0, 305, Short.MAX_VALUE)
         );
         pausePanelLayout.setVerticalGroup(
             pausePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 333, Short.MAX_VALUE)
+            .addGap(0, 443, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout boardLayout = new javax.swing.GroupLayout(board);
@@ -78,18 +82,25 @@ public class Tetris extends javax.swing.JFrame {
         boardLayout.setHorizontalGroup(
             boardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(boardLayout.createSequentialGroup()
-                .addComponent(pausePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 178, Short.MAX_VALUE)
+                .addComponent(pausePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 305, Short.MAX_VALUE)
                 .addGap(0, 0, 0))
         );
         boardLayout.setVerticalGroup(
             boardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(pausePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 333, Short.MAX_VALUE)
+            .addComponent(pausePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 443, Short.MAX_VALUE)
         );
 
         getContentPane().add(board, java.awt.BorderLayout.CENTER);
 
         scoreBoard.setText("Score: ");
         getContentPane().add(scoreBoard, java.awt.BorderLayout.PAGE_END);
+
+        jPanel2.setBackground(new java.awt.Color(51, 51, 51));
+        jPanel2.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 255), 1, true));
+
+        //nextPiecePanel1.setVisible(false);
+        nextPiecePanel1.setBackground(new java.awt.Color(0, 0, 0));
+        nextPiecePanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 0, 0)));
 
         javax.swing.GroupLayout nextPiecePanel1Layout = new javax.swing.GroupLayout(nextPiecePanel1);
         nextPiecePanel1.setLayout(nextPiecePanel1Layout);
@@ -99,22 +110,27 @@ public class Tetris extends javax.swing.JFrame {
         );
         nextPiecePanel1Layout.setVerticalGroup(
             nextPiecePanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 100, Short.MAX_VALUE)
+            .addGap(0, 88, Short.MAX_VALUE)
         );
 
+        jLabel1.setForeground(new java.awt.Color(255, 0, 0));
         jLabel1.setText("Next:");
+
+        holdPanel1.setBackground(new java.awt.Color(0, 0, 0));
+        holdPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 0, 0)));
 
         javax.swing.GroupLayout holdPanel1Layout = new javax.swing.GroupLayout(holdPanel1);
         holdPanel1.setLayout(holdPanel1Layout);
         holdPanel1Layout.setHorizontalGroup(
             holdPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 100, Short.MAX_VALUE)
+            .addGap(0, 86, Short.MAX_VALUE)
         );
         holdPanel1Layout.setVerticalGroup(
             holdPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 100, Short.MAX_VALUE)
+            .addGap(0, 88, Short.MAX_VALUE)
         );
 
+        jLabel2.setForeground(new java.awt.Color(255, 0, 0));
         jLabel2.setText("Hold:");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -122,27 +138,29 @@ public class Tetris extends javax.swing.JFrame {
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(nextPiecePanel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(holdPanel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(0, 0, Short.MAX_VALUE))
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(6, 6, 6)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1)
-                    .addComponent(jLabel2))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel1)
+                            .addComponent(jLabel2))
+                        .addContainerGap(57, Short.MAX_VALUE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(holdPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(nextPiecePanel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(6, 6, 6))))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(50, 50, 50)
                 .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(18, 18, 18)
                 .addComponent(nextPiecePanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jLabel2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
                 .addComponent(holdPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(23, 23, 23))
         );

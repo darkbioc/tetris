@@ -24,130 +24,38 @@ public final class Board extends JPanel implements ActionListener {
         {
         switch (e.getKeyCode()) {
         case KeyEvent.VK_LEFT:
-            if(canMove(currentShape,currentRow,currentCol-1))
-                currentCol--;
+            if(!gameOver && timer.isRunning())
+            {
+                if(canMove(currentShape,currentRow,currentCol-1))
+                {
+                    currentCol--;
+                }
+            }
             break;
         case KeyEvent.VK_RIGHT:
-            if(canMove(currentShape,currentRow,currentCol+1))
-                currentCol++;
+            
+            if(!gameOver && timer.isRunning())
+            {
+                if(canMove(currentShape,currentRow,currentCol+1))
+                {
+                    currentCol++;
+                }
+            }
             break;
         case KeyEvent.VK_UP:
-            Shape rotShape = currentShape.rotateRight();
-            /*if(currentRow!=20)
-            {*/
-                if(currentCol==0 && !(currentShape.getXMax()==1 && currentShape.getXMin()==0 && currentShape.getYMax()==1 && currentShape.getYMin()==0))
-                {
-                    if(canMove(currentShape, currentRow, currentCol+1))
-                    {
-                        if(currentShape.getYMin()==-2 && canMove(currentShape, currentRow, currentCol+2))
-                        {
-                            if(canMove(rotShape, currentRow, currentCol+2))
-                            {
-                                currentCol+=2;
-                                currentShape=rotShape;
-                            }
-                        }
-                        else if(currentShape.getYMax()==2)
-                        {
-                            if(canMove(rotShape, currentRow, currentCol+1))
-                            {
-                                currentCol++;
-                                currentShape=rotShape;
-                            }
-                        }
-                        else if (currentShape.getYMin()!=-2 )
-                        {
-                            currentCol++;
-                            currentShape=rotShape;
-                        }                    
-                    }
-                }
-                else if(currentCol==NUM_COLS-1)
-                {
-                    if(canMove(currentShape, currentRow, currentCol-1))
-                    {
-                        if(currentShape.getYMax()==2 && canMove(currentShape, currentRow, currentCol-2))
-                        {
-                            if(canMove(rotShape, currentRow, currentCol-2))
-                            {
-                                currentCol-=2;
-                                currentShape=rotShape;
-                            }                      
-                        }
-                        else if(currentShape.getYMin()==-2)
-                        {
-                            if(canMove(rotShape, currentRow, currentCol-1))
-                            {
-                                currentCol--;
-                                currentShape=rotShape;
-                            }
-                        }
-                        else if(currentShape.getYMax()!=2)
-                        {
-                            currentCol--;
-                            currentShape=rotShape;
-                        }
-                    }
-                }
-                else if(currentCol==NUM_COLS-2 && currentShape.getYMax()==2)
-                {
-                    if(canMove(rotShape, currentRow, currentCol-1))
-                    {
-                        currentCol--;
-                        currentShape=rotShape;
-                    }
-                }
-                else if(currentCol==1 && currentShape.getYMin()==-2)
-                {
-                    if(canMove(rotShape, currentRow, currentCol+1))
-                    {
-                        currentCol++;
-                        currentShape=rotShape;
-                    }
-                }
-                else if(canMove(rotShape, currentRow, currentCol))
-                {
-                    currentShape=rotShape;
-                }
-                else if(!canMove(rotShape, currentRow, currentCol))
-                {
-                    if(canMove(rotShape, currentRow, currentCol+1))
-                    {
-                        currentCol++;
-                        currentShape=rotShape;
-                    }
-                    if(canMove(rotShape, currentRow, currentCol-1))
-                    {
-                        currentCol--;
-                        currentShape=rotShape;
-                    }
-                    if(!canMove(rotShape, currentRow, currentCol+1) && currentShape.getYMin()==-2)
-                    {
-                        if(canMove(rotShape, currentRow, currentCol+2))
-                        {
-                            currentCol+=2;
-                            currentShape=rotShape;
-                        }
-                    }
-                    if(!canMove(rotShape, currentRow, currentCol-1) && currentShape.getYMax()==2)
-                    {
-                        if(canMove(rotShape, currentRow, currentCol-2))
-                        {
-                            currentCol-=2;
-                            currentShape=rotShape;
-                        }
-                    }
-                //}
-            /*if(canMove(rotShape,currentRow, currentCol))
+            if(!gameOver && timer.isRunning())
             {
-                currentShape=rotShape;
-            }*/
-            }
-            
+                rotate();
+            }            
         break;
         case KeyEvent.VK_DOWN:
-            if(canMove(currentShape,currentRow+1, currentCol))
-                currentRow++;
+            if(!gameOver && timer.isRunning())
+            {
+                if(canMove(currentShape,currentRow+1, currentCol))
+                {
+                    currentRow++;
+                }
+            }
         break;
         case KeyEvent.VK_P:
             effect=getClass().getResourceAsStream("/Pause.wav");
@@ -198,25 +106,26 @@ public final class Board extends JPanel implements ActionListener {
                     }
             }
         case KeyEvent.VK_C:
-            if(!swapped)
+            if (!gameOver && timer.isRunning())
             {
-                if(firstSwap)
-                {
-                    holdPanel.swapShape(currentShape);
-                    currentShape = nextPiecePanel.getShape();
-                    nextPiecePanel.generateNewShape();
-                    firstSwap=false;
-                }
-                else
-                {
-                    currentShape=holdPanel.swapShape(currentShape);
-                }
-                currentRow = INIT_ROW;
-                currentCol = NUM_COLS/2;
-                swapped=true;
+                swap();
             }
             
         break;
+        case KeyEvent.VK_SPACE:
+            if (!gameOver && timer.isRunning())
+            {
+                for (int i = 0; i < NUM_ROWS+1; i++) 
+                {
+                    if(!canMove(currentShape, i, currentCol))
+                    {
+                        currentRow=i-1;
+                        hit();
+                        break;
+                    }
+                }
+            }
+            break;
         default:
         break;
         }
@@ -340,7 +249,14 @@ public final class Board extends JPanel implements ActionListener {
             }
             else
             {
-                swapped=false;
+                hit();
+            }
+            
+        }
+    }
+    private void hit()
+    {
+        swapped=false;
                 moveCurrentShapeToMatrix();
                 try {
                     checkRows();
@@ -351,17 +267,20 @@ public final class Board extends JPanel implements ActionListener {
                 nextPiecePanel.generateNewShape();
                 currentRow = INIT_ROW;
                 currentCol = NUM_COLS/2;
-            }
-            
-        }
     }
     private void moveCurrentShapeToMatrix()
     {
         int[][] squaresArray = currentShape.getCoordinates();
         for(int point = 0; point<=3; point++)
         {
-            matrix[currentRow+squaresArray[point][1]][currentCol+squaresArray[point][0]]=currentShape.getShape();
+            int row=currentRow+squaresArray[point][1];
+            int col=currentCol+squaresArray[point][0];
+            if(row>=0)
+            {
+                matrix[row][col]=currentShape.getShape();
+            }
         }
+        
     }
 
     @Override
@@ -477,7 +396,10 @@ public final class Board extends JPanel implements ActionListener {
         AudioPlayer.player.stop(audios);
         music=getClass().getResourceAsStream("/High Scores.wav");
         audios = new AudioStream(music);
-        nextPiecePanel.setVisible(false);
+        nextPiecePanel.clearShape();
+        nextPiecePanel.repaint();
+        holdPanel.clearShape();
+        holdPanel.repaint();
         if(!musicStopped)
         {
             AudioPlayer.player.start(audios);
@@ -498,5 +420,139 @@ public final class Board extends JPanel implements ActionListener {
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e.getLocalizedMessage());
         }
+    }
+    public void rotate()
+    {
+        Shape rotShape = currentShape.rotateRight();
+            /*if(currentRow!=20)
+            {*/
+                if(currentCol==0 && !(currentShape.getXMax()==1 && currentShape.getXMin()==0 && currentShape.getYMax()==1 && currentShape.getYMin()==0))
+                {
+                    if(canMove(currentShape, currentRow, currentCol+1))
+                    {
+                        if(currentShape.getYMin()==-2 && canMove(currentShape, currentRow, currentCol+2))
+                        {
+                            if(canMove(rotShape, currentRow, currentCol+2))
+                            {
+                                currentCol+=2;
+                                currentShape=rotShape;
+                            }
+                        }
+                        else if(currentShape.getYMax()==2)
+                        {
+                            if(canMove(rotShape, currentRow, currentCol+1))
+                            {
+                                currentCol++;
+                                currentShape=rotShape;
+                            }
+                        }
+                        else if (currentShape.getYMin()!=-2 )
+                        {
+                            currentCol++;
+                            currentShape=rotShape;
+                        }                    
+                    }
+                }
+                else if(currentCol==NUM_COLS-1)
+                {
+                    if(canMove(currentShape, currentRow, currentCol-1))
+                    {
+                        if(currentShape.getYMax()==2 && canMove(currentShape, currentRow, currentCol-2))
+                        {
+                            if(canMove(rotShape, currentRow, currentCol-2))
+                            {
+                                currentCol-=2;
+                                currentShape=rotShape;
+                            }                      
+                        }
+                        else if(currentShape.getYMin()==-2)
+                        {
+                            if(canMove(rotShape, currentRow, currentCol-1))
+                            {
+                                currentCol--;
+                                currentShape=rotShape;
+                            }
+                        }
+                        else if(currentShape.getYMax()!=2)
+                        {
+                            currentCol--;
+                            currentShape=rotShape;
+                        }
+                    }
+                }
+                else if(currentCol==NUM_COLS-2 && currentShape.getYMax()==2)
+                {
+                    if(canMove(rotShape, currentRow, currentCol-1))
+                    {
+                        currentCol--;
+                        currentShape=rotShape;
+                    }
+                }
+                else if(currentCol==1 && currentShape.getYMin()==-2)
+                {
+                    if(canMove(rotShape, currentRow, currentCol+1))
+                    {
+                        currentCol++;
+                        currentShape=rotShape;
+                    }
+                }
+                else if(canMove(rotShape, currentRow, currentCol))
+                {
+                    currentShape=rotShape;
+                }
+                else if(!canMove(rotShape, currentRow, currentCol))
+                {
+                    if(canMove(rotShape, currentRow, currentCol+1))
+                    {
+                        currentCol++;
+                        currentShape=rotShape;
+                    }
+                    if(canMove(rotShape, currentRow, currentCol-1))
+                    {
+                        currentCol--;
+                        currentShape=rotShape;
+                    }
+                    if(!canMove(rotShape, currentRow, currentCol+1) && currentShape.getYMin()==-2)
+                    {
+                        if(canMove(rotShape, currentRow, currentCol+2))
+                        {
+                            currentCol+=2;
+                            currentShape=rotShape;
+                        }
+                    }
+                    if(!canMove(rotShape, currentRow, currentCol-1) && currentShape.getYMax()==2)
+                    {
+                        if(canMove(rotShape, currentRow, currentCol-2))
+                        {
+                            currentCol-=2;
+                            currentShape=rotShape;
+                        }
+                    }
+                //}
+            /*if(canMove(rotShape,currentRow, currentCol))
+            {
+                currentShape=rotShape;
+            }*/
+            }
+    }
+    public void swap()
+    {
+        if(!swapped)
+            {
+                if(firstSwap)
+                {
+                    holdPanel.swapShape(currentShape);
+                    currentShape = nextPiecePanel.getShape();
+                    nextPiecePanel.generateNewShape();
+                    firstSwap=false;
+                }
+                else
+                {
+                    currentShape=holdPanel.swapShape(currentShape);
+                }
+                currentRow = INIT_ROW;
+                currentCol = NUM_COLS/2;
+                swapped=true;
+            }
     }
 }

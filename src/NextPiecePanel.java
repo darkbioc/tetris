@@ -20,7 +20,6 @@ public class NextPiecePanel extends javax.swing.JPanel {
      */
     public NextPiecePanel() {
         initComponents();
-        shape=Shape.getRandomShape();
     }
     
     @Override
@@ -28,6 +27,11 @@ public class NextPiecePanel extends javax.swing.JPanel {
         super.paintComponent(g);
         if (shape!=null)
         shape.draw(g, 1, 1, squareWidth(), squareHeight());
+    }
+    
+    public void clearShape()
+    {
+        shape=null;
     }
 
     public Shape getShape()
