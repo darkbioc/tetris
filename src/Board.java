@@ -58,7 +58,7 @@ public final class Board extends JPanel implements ActionListener {
             }
         break;
         case KeyEvent.VK_P:
-            
+            switchPause();
         break;
         
         case KeyEvent.VK_M:
@@ -92,7 +92,11 @@ public final class Board extends JPanel implements ActionListener {
         }
     }
     public ScoreBoard scoreBoard;
-    
+    private JFrame parentFrame;
+
+    public void setParentFrame(JFrame parentFrame) {
+        this.parentFrame = parentFrame;
+    }
     public static final int NUM_ROWS = 22;
     public static final int NUM_COLS = 10;
 
@@ -110,7 +114,7 @@ public final class Board extends JPanel implements ActionListener {
     private boolean gameOver;
     private boolean swapped;
     private boolean firstSwap;
-    private final Timer timer;
+    public Timer timer;
     
     private boolean musicStopped;
     MyKeyAdapter keyAdepter;
@@ -144,7 +148,7 @@ public final class Board extends JPanel implements ActionListener {
     public void initValues() {
         setFocusable(true);
         cleanBoard();
-        deltaTime = 500-(50*scoreBoard.getLevel());
+        deltaTime = 500;
         currentShape = null;
         currentRow = INIT_ROW;
         currentCol = NUM_COLS / 2;
@@ -155,6 +159,8 @@ public final class Board extends JPanel implements ActionListener {
         removeKeyListener(keyAdepter);
         initValues();
         scoreBoard.reset();
+        if(scoreBoard.getLevel()!=1)
+            deltaTime=deltaTime-(50*scoreBoard.getLevel());
         timer.setDelay(deltaTime);
         nextPiecePanel.generateNewShape();
         holdPanel.clearShape();
@@ -363,6 +369,8 @@ public final class Board extends JPanel implements ActionListener {
         {
             AudioPlayer.player.start(audios);
         }
+        RecordsDialog d = new RecordsDialog(parentFrame, true, scoreBoard.getScore());
+        d.setVisible(true);
         
     }
     public void playSong() 
